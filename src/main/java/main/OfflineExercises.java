@@ -1,0 +1,283 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
+
+public class OfflineExercises {
+
+	// Given a string, return a string where
+	// for every char in the original string,
+	// there are three chars.
+
+	// multChar("The") returns "TTThhheee"
+	// multChar("AAbb") returns "AAAAAAbbbbbb"
+	// multChar("Hi-There") returns "HHHiii---TTThhheeerrreee"
+
+	public String multChar(String input) {
+		String tripleChar = "";
+		for (int i = 0; i < input.length(); i++) {
+			for (int count = 0; count < 3; count++) {
+				tripleChar += input.substring(i, i+1);
+			}
+		}
+		return tripleChar;
+	}
+
+	// Return the string (backwards) that is between the first and last appearance
+	// of "bert"
+	// in the given string, or return the empty string "" if there is not 2
+	// occurances of "bert" - Ignore Case
+
+	// getBert("bertclivebert") returns "evilc"
+	// getBert("xxbertfridgebertyy") returns "egdirf"
+	// getBert("xxBertfridgebERtyy") returns "egdirf"
+	// getBert("xxbertyy") returns ""
+	// getBert("xxbeRTyy") returns ""
+
+	public String getBert(String input) {
+		input = input.toLowerCase();
+		String bertFinder = "";
+		int bertCount = 0;
+		int bertLocation1 = 0;
+		int bertLocation2 = 0;
+		Stack<String> reverser = new Stack<String>();
+		String bertReversed = "";
+		
+		for (int i = 0; (i+3) < input.length(); i++) {
+			if (input.substring(i,i+4).contentEquals("bert")) {
+				bertCount++;
+				if(bertCount == 1) {
+					bertLocation1 = i + 4;
+				}else if (bertCount == 2){
+					bertLocation2 = i;
+				}
+			}
+		}
+		
+		if (bertCount == 2) {
+			bertFinder = input.substring(bertLocation1, bertLocation2);
+		}
+		
+		for (int i = 0; i < bertFinder.length(); i++) {
+			reverser.add(bertFinder.substring(i, i + 1));
+		}
+		
+		int reverserLength = reverser.size();
+		for (int i = 0; i < reverserLength; i++) {
+			bertReversed += reverser.pop();
+		}
+		return bertReversed;
+	}
+
+	// Given three ints, a b c, one of them is small, one is medium and one is
+	// large. Return true if the three values are evenly spaced, so the
+	// difference between small and medium is the same as the difference between
+	// medium and large. Do not assume the ints will come to you in a reasonable
+	// order.
+
+	// evenlySpaced(2, 4, 6) returns true
+	// evenlySpaced(4, 6, 2) returns true
+	// evenlySpaced(4, 6, 3) returns false
+	// evenlySpaced(4, 60, 9) returns false
+
+	public boolean evenlySpaced(int a, int b, int c) {
+		int gap1 = 0;
+		int gap2 = 0;
+		boolean gapChecker = false;
+		List<Integer> numberSorter = new ArrayList<Integer>();
+		numberSorter.add(a);
+		numberSorter.add(b);
+		numberSorter.add(c);
+		
+		Collections.sort(numberSorter);
+		gap1 = numberSorter.get(1) - numberSorter.get(0);
+		gap2 = numberSorter.get(2) - numberSorter.get(1);
+		
+		if(gap1 == gap2) {
+			gapChecker = true;
+		}
+		return gapChecker;
+	}
+
+	// Given a string and an int n, return a string that removes n letters from the
+	// 'middle' of the string.
+	// The string length will be at least n, and be odd when the length of the input
+	// is odd.
+
+	// nMid("Hello", 3) returns "Ho"
+	// nMid("Chocolate", 3) returns "Choate"
+	// nMid("Chocolate", 1) returns "Choclate"
+
+	public String nMid(String input, int a) {
+		String removeMid = "";
+		int stringMidStart = ((input.length() - (a)) / 2);
+		int stringMidEnd = stringMidStart + a;
+		
+		removeMid += input.substring(0, stringMidStart);
+		removeMid += input.substring(stringMidEnd);
+		return removeMid;
+	}
+
+	// Given a string, return true if it ends in "dev". Ignore Case
+
+	// endsDev("ihatedev") returns true
+	// endsDev("wehateDev") returns true
+	// endsDev("everoyonehatesdevforreal") returns false
+	// endsDev("devisnotcool") returns false
+
+	public boolean endsDev(String input) {
+		boolean devTrue = false;
+		input = input.toLowerCase();
+		if (input.length() < 3) {
+			return false;
+		}
+		int endPos = input.length() - 1;
+		int startPos = endPos - 2;
+		if (input.substring(startPos).contentEquals("dev")) {
+			devTrue = true;
+		}
+		
+		return devTrue;
+	}
+
+	// Given a string, return the length of the largest "block" in the string.
+	// A block is a run of adjacent chars that are the same.
+	//
+	// superBlock("hoopplla") returns 2
+	// superBlock("abbCCCddDDDeeEEE") returns 3
+	// superBlock("") returns 0
+
+	public int superBlock(String input) {
+		if (input.length() <= 1) {
+			return 0;
+		}
+		String lastLetter = input.substring(0,1);
+		String currentLetter = "";
+		int counter = 1;
+		List<Integer> counterCollection = new ArrayList<Integer>();
+		
+		for (int i = 1; i < input.length(); i++) {
+			currentLetter = input.substring(i, i+1);
+			if (currentLetter.contentEquals(lastLetter)){
+				counter++;
+			} else {
+				lastLetter = currentLetter;
+				if (counter > 1) {
+					counterCollection.add(counter);
+					counter = 1;
+				}
+			}
+		}
+		
+		if (counterCollection.size() > 0) {
+			Collections.sort(counterCollection);
+			counter = counterCollection.get(counterCollection.size() -1);
+		} else {
+			return 0;
+		}
+		
+		
+		return counter;
+
+	}
+
+	// given a string - return the number of times "am" appears in the String
+	// ignoring case -
+	// BUT ONLY WHEN the word "am" appears without being followed or proceeded by
+	// other letters
+	//
+	// amISearch("Am I in Amsterdam") returns 1
+	// amISearch("I am in Amsterdam am I?") returns 2
+	// amISearch("I have been in Amsterdam") returns 0
+
+	public int amISearch(String arg1) {
+		arg1 = arg1.toLowerCase();
+		arg1 = " " + arg1 + " ";
+		int count = 0;
+		
+		for (int i = 0; (i+3) < arg1.length(); i++) {
+			if (arg1.substring(i,i+4).contentEquals(" am ")) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	// given a number
+	// if this number is divisible by 3 return "fizz"
+	// if this number is divisible by 5 return "buzz"
+	// if this number is divisible by both 3 and 5return "fizzbuzz"
+	//
+	// fizzBuzz(3) returns "fizz"
+	// fizzBuzz(10) returns "buzz"
+	// fizzBuzz(15) returns "fizzbuzz"
+
+	public String fizzBuzz(int arg1) {
+		String fizzBuzz = "";
+		
+		if((arg1 % 3) == 0) {
+			fizzBuzz += "fizz";
+		}
+		if((arg1 % 5) == 0) {
+			fizzBuzz += "buzz";
+		}
+		return fizzBuzz;
+
+	}
+
+	// Given a string split the string into the individual numbers present
+	// then add each digit of each number to get a final value for each number
+	// String example = "55 72 86"
+	//
+	// "55" will = the integer 10
+	// "72" will = the integer 9
+	// "86" will = the integer 14
+	//
+	// You then need to return the highest vale
+	//
+	// largest("55 72 86") returns 14
+	// largest("15 72 80 164") returns 11
+	// largest("555 72 86 45 10") returns 15
+
+	public int largest(String arg1) {
+		List<Integer> spaces = new ArrayList<Integer>();
+		List<Integer> numbers = new ArrayList<Integer>();
+		List<Integer> totals = new ArrayList<Integer>();
+		Stack<Integer> sumOfDigits = new Stack<Integer>();
+		int previousSpace = -1;
+		
+		for (int i = 0; i < arg1.length(); i++) {
+			if (arg1.substring(i, i+1).contentEquals(" ")) {
+				spaces.add(i);
+			}
+		}
+		
+		for (int i : spaces) {
+			numbers.add(Integer.parseInt(arg1.substring(previousSpace + 1, i)));
+			previousSpace = i;
+		}
+		numbers.add(Integer.parseInt(arg1.substring(previousSpace + 1, arg1.length())));
+		
+		for (int i : numbers) {
+			int tempNum = i;
+			int tempSum = 0;
+			int zCount = 0;
+			
+			while(tempNum > 0) {
+				sumOfDigits.push(tempNum % 10);
+				tempNum /= 10;
+			}
+			while (zCount < sumOfDigits.size()) {
+				tempSum += sumOfDigits.pop();
+			}
+			totals.add(tempSum);
+		}
+		
+		Collections.sort(totals);
+		
+		return totals.get(totals.size() - 1);
+	}
+
+}
